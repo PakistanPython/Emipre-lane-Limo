@@ -27,7 +27,7 @@ const Routes = () => {
         <Route path="/customer-dashboard" element={<CustomerDashboard />} />
         <Route path="/customer-dashboard/current-bookings" element={<CurrentBookings />} />
         <Route path="/customer-dashboard/booking-history" element={<BookingHistory />} />
-        <Route path="/recurring-bookings" element={<RecurringBookings />} />
+        <Route path="/customer-dashboard/recurring-bookings" element={<RecurringBookings />} />
         <Route path="/homepage" element={<Homepage />} />
         <Route path="/booking-confirmation" element={<BookingConfirmation />} />
         <Route path="/vehicle-booking-system" element={<VehicleBookingSystem />} />

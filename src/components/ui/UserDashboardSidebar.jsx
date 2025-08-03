@@ -34,7 +34,7 @@ const UserDashboardSidebar = ({ isOpen = true, onToggle }) => {
       children: [
         { label: 'Current Bookings', path: '/customer-dashboard/current-bookings', icon: 'Clock' },
         { label: 'Booking History', path: '/customer-dashboard/booking-history', icon: 'History' },
-        { label: 'Recurring Bookings', path: '/customer-dashboard/recurring', icon: 'Repeat' }
+        { label: 'Recurring Bookings', path: '/customer-dashboard/recurring-bookings', icon: 'Repeat' }
       ]
     },
     {
