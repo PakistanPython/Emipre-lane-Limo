@@ -57,7 +57,6 @@
   },
   "scripts": {
     "start": "vite",
-    "dev": "vite",
     "build": "vite build --sourcemap",
     "serve": "vite preview"
   },
