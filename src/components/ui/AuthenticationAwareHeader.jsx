@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useUser } from '../../contexts/UserContext';
 import Icon from '../AppIcon';
 import Button from './Button';
 
 const AuthenticationAwareHeader = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { user, logout } = useUser();
+  const isAuthenticated = !!user;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
   const location = useLocation();
-
-  useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    setIsAuthenticated(!!token);
-  }, [location]);
-
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -22,9 +19,9 @@ const AuthenticationAwareHeader = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    setIsAuthenticated(false);
+    logout();
     closeMobileMenu();
+    navigate('/login');
   };
 
   const isActiveRoute = (path) => {

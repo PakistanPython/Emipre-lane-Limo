@@ -26,8 +26,20 @@ export const UserProvider = ({ children }) => {
     fetchUser();
   }, []);
 
+  const login = (userData, token) => {
+    setUser(userData);
+    localStorage.setItem('authToken', token);
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('authToken');
+    delete api.defaults.headers.common['Authorization'];
+  };
+
   return (
-    <UserContext.Provider value={{ user, loading }}>
+    <UserContext.Provider value={{ user, loading, login, logout }}>
       {children}
     </UserContext.Provider>
   );

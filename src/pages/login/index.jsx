@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { useUser } from '../../contexts/UserContext';
 import AuthenticationAwareHeader from '../../components/ui/AuthenticationAwareHeader';
 import LoginHeader from './components/LoginHeader';
 import LoginForm from './components/LoginForm';
@@ -13,7 +14,7 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null); // State for error messages
   const navigate = useNavigate();
-
+  const { login } = useUser();
   useEffect(() => {
     // Check if user is already authenticated
     const token = localStorage.getItem('authToken');
@@ -32,8 +33,7 @@ const LoginPage = () => {
       });
 
       if (response.data && response.data.token) {
-        localStorage.setItem('authToken', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+        login(response.data.user, response.data.token);
         const redirectPath = localStorage.getItem('redirectAfterLogin');
         if (redirectPath) {
           localStorage.removeItem('redirectAfterLogin');
