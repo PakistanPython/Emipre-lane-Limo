@@ -13,12 +13,6 @@ const LoginForm = ({ onSubmit, loading = false }) => {
   });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
-
-  const mockCredentials = {
-    email: 'john.doe@example.com',
-    password: 'Password123!'
-  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -60,31 +54,6 @@ const LoginForm = ({ onSubmit, loading = false }) => {
     
     if (!validateForm()) {
       return;
-    }
-
-    // Check mock credentials
-    if (formData.email !== mockCredentials.email || formData.password !== mockCredentials.password) {
-      setErrors({
-        general: `Invalid credentials. Use: ${mockCredentials.email} / ${mockCredentials.password}`
-      });
-      return;
-    }
-
-    // Simulate successful login
-    localStorage.setItem('authToken', 'mock-jwt-token-' + Date.now());
-    localStorage.setItem('userEmail', formData.email);
-    
-    if (formData.rememberMe) {
-      localStorage.setItem('rememberMe', 'true');
-    }
-
-    // Check for redirect after login
-    const redirectPath = localStorage.getItem('redirectAfterLogin');
-    if (redirectPath) {
-      localStorage.removeItem('redirectAfterLogin');
-      navigate(redirectPath);
-    } else {
-      navigate('/customer-dashboard');
     }
 
     if (onSubmit) {

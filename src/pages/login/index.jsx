@@ -7,9 +7,11 @@ import LoginForm from './components/LoginForm';
 import SocialLogin from './components/SocialLogin';
 import LoginFooter from './components/LoginFooter';
 import Image from '../../components/AppImage';
+import api from '../../services/api'; // Import the API service
 
 const LoginPage = () => {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null); // State for error messages
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,15 +24,46 @@ const LoginPage = () => {
 
   const handleLoginSubmit = async (formData) => {
     setLoading(true);
-    
-    // Simulate API call delay
-    setTimeout(() => {
+    setError(null); // Clear previous errors
+    try {
+      const response = await api.post('/auth/login', {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (response.data && response.data.token) {
+        localStorage.setItem('authToken', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        const redirectPath = localStorage.getItem('redirectAfterLogin');
+        if (redirectPath) {
+          localStorage.removeItem('redirectAfterLogin');
+          navigate(redirectPath);
+        } else {
+          navigate('/customer-dashboard');
+        }
+      } else {
+        setError('Login failed: Invalid response from server.');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      if (err.response && err.response.data && err.response.data.error) {
+        setError(err.response.data.error);
+      } else {
+        setError('An unexpected error occurred during login.');
+      }
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   const handleSocialLogin = (userData) => {
-    // Handle social login success
+    // This part would typically involve backend integration for social login
+    // For now, we'll simulate success and redirect
+    console.log('Social login data:', userData);
+    // Assuming social login provides a token and user data
+    localStorage.setItem('authToken', 'mock_social_token'); // Replace with actual token
+    localStorage.setItem('user', JSON.stringify({ email: userData.email, firstName: userData.name })); // Replace with actual user data
+
     const redirectPath = localStorage.getItem('redirectAfterLogin');
     if (redirectPath) {
       localStorage.removeItem('redirectAfterLogin');
@@ -59,6 +92,7 @@ const LoginPage = () => {
                 <LoginHeader />
                 
                 <div className="bg-card border border-border rounded-xl p-8 luxury-shadow">
+                  {error && <p className="text-red-500 text-center mb-4">{error}</p>}
                   <LoginForm 
                     onSubmit={handleLoginSubmit}
                     loading={loading}

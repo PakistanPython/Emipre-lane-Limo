@@ -7,10 +7,12 @@ import RegistrationBenefits from './components/RegistrationBenefits';
 import RegistrationTestimonials from './components/RegistrationTestimonials';
 import Button from '../../components/ui/Button';
 import Icon from '../../components/AppIcon';
+import api from '../../services/api'; // Import the API service
 
 const Register = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null); // State for error messages
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
@@ -24,38 +26,39 @@ const Register = () => {
 
   const handleRegistration = async (formData) => {
     setIsLoading(true);
+    setError(null); // Clear previous errors
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mock successful registration
-      const mockToken = 'mock-jwt-token-' + Date.now();
-      const mockUser = {
-        id: Date.now(),
-        firstName: formData.firstName,
-        lastName: formData.lastName,
+      const response = await api.post('/auth/register', {
         email: formData.email,
+        password: formData.password,
+        full_name: `${formData.firstName} ${formData.lastName}`,
         phone: formData.phone,
         preferredVehicle: formData.preferredVehicle,
         notifications: formData.notifications,
-        createdAt: new Date().toISOString()
-      };
+      });
 
-      // Store authentication data
-      localStorage.setItem('authToken', mockToken);
-      localStorage.setItem('userData', JSON.stringify(mockUser));
+      if (response.data && response.data.token) {
+        localStorage.setItem('authToken', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
 
-      // Check for redirect after login
-      const redirectPath = localStorage.getItem('redirectAfterLogin');
-      if (redirectPath) {
-        localStorage.removeItem('redirectAfterLogin');
-        navigate(redirectPath);
+        const redirectPath = localStorage.getItem('redirectAfterLogin');
+        if (redirectPath) {
+          localStorage.removeItem('redirectAfterLogin');
+          navigate(redirectPath);
+        } else {
+          navigate('/customer-dashboard');
+        }
       } else {
-        navigate('/customer-dashboard');
+        setError('Registration failed: Invalid response from server.');
       }
-    } catch (error) {
-      console.error('Registration failed:', error);
+    } catch (err) {
+      console.error('Registration failed:', err);
+      if (err.response && err.response.data && err.response.data.error) {
+        setError(err.response.data.error);
+      } else {
+        setError('An unexpected error occurred during registration.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -87,10 +90,13 @@ const Register = () => {
 
                 {/* Registration Card */}
                 <div className="bg-card border border-border rounded-xl luxury-shadow-lg p-6 lg:p-8">
+                  {error && <p className="text-red-500 text-center mb-4">{error}</p>}
                   <RegistrationProgress currentStep={currentStep} />
                   <RegistrationForm 
                     onSubmit={handleRegistration}
                     isLoading={isLoading}
+                    currentStep={currentStep}
+                    setCurrentStep={setCurrentStep}
                   />
                 </div>
 

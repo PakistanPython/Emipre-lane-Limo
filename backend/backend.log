@@ -1,0 +1,216 @@
+nohup: ignoring input
+
+> empire-lane-limo-backend@1.0.0 start
+> node src/server.js
+
+(node:14054) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Empire Lane Limo API server running on port 5000
+Environment: development
+Health check: http://localhost:5000/health
+2025-08-03T09:01:04.952Z - HEAD /
+2025-08-03T09:01:04.961Z - HEAD /api';
+2025-08-03T09:01:04.964Z - GET /
+2025-08-03T09:01:04.967Z - GET /api';
+2025-08-03T09:06:35.468Z - HEAD /
+2025-08-03T09:06:35.475Z - HEAD /api';
+2025-08-03T09:06:35.477Z - GET /
+2025-08-03T09:06:35.481Z - GET /api';
+2025-08-03T09:07:35.575Z - GET /api/vehicles
+Get vehicles error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:07:35.860Z - GET /api/vehicles/types/list
+Get vehicle types error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:07:35.903Z - GET /api/service-areas
+Get service areas error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:07:35.949Z - GET /api/service-areas/cities
+Get service cities error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:07:35.984Z - GET /api/testimonials
+Get testimonials error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:07:36.033Z - GET /api/testimonials/featured
+Get featured testimonials error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:07:36.080Z - POST /api/auth/register
+Supabase auth.signUp error: AuthApiError: Email address "test@example.com" is invalid
+    at handleError (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:69:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async _handleRequest (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:114:9)
+    at async _request (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:95:18)
+    at async SupabaseAuthClient.signUp (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/GoTrueClient.js:321:23)
+    at async /home/ubuntu/project/empire_lane_limo/backend/src/routes/auth.js:33:29 {
+  __isAuthError: true,
+  status: 400,
+  code: 'email_address_invalid'
+}
+2025-08-03T09:07:36.300Z - POST /api/auth/login
+Supabase auth.signInWithPassword error: AuthApiError: Invalid login credentials
+    at handleError (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:69:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async _handleRequest (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:114:9)
+    at async _request (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:95:18)
+    at async SupabaseAuthClient.signInWithPassword (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/GoTrueClient.js:384:23)
+    at async /home/ubuntu/project/empire_lane_limo/backend/src/routes/auth.js:93:29 {
+  __isAuthError: true,
+  status: 400,
+  code: 'invalid_credentials'
+}
+2025-08-03T09:21:39.150Z - GET /api/vehicles
+Get vehicles error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:21:39.587Z - GET /api/vehicles/types/list
+Get vehicle types error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:21:39.675Z - GET /api/service-areas
+Get service areas error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:21:39.737Z - GET /api/service-areas/cities
+Get service cities error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:21:39.810Z - GET /api/testimonials
+Get testimonials error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:21:39.881Z - GET /api/testimonials/featured
+Get featured testimonials error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:21:39.951Z - POST /api/auth/register
+Supabase auth.signUp error: AuthApiError: Email address "test@example.com" is invalid
+    at handleError (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:69:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async _handleRequest (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:114:9)
+    at async _request (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:95:18)
+    at async SupabaseAuthClient.signUp (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/GoTrueClient.js:321:23)
+    at async /home/ubuntu/project/empire_lane_limo/backend/src/routes/auth.js:33:29 {
+  __isAuthError: true,
+  status: 400,
+  code: 'email_address_invalid'
+}
+2025-08-03T09:21:40.225Z - POST /api/auth/login
+Supabase auth.signInWithPassword error: AuthApiError: Invalid login credentials
+    at handleError (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:69:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async _handleRequest (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:114:9)
+    at async _request (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:95:18)
+    at async SupabaseAuthClient.signInWithPassword (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/GoTrueClient.js:384:23)
+    at async /home/ubuntu/project/empire_lane_limo/backend/src/routes/auth.js:93:29 {
+  __isAuthError: true,
+  status: 400,
+  code: 'invalid_credentials'
+}
+2025-08-03T09:25:37.410Z - GET /api/vehicles
+Get vehicles error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:25:37.531Z - GET /api/vehicles/types/list
+Get vehicle types error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:25:37.568Z - GET /api/service-areas
+Get service areas error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:25:37.609Z - GET /api/service-areas/cities
+Get service cities error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:25:37.647Z - GET /api/testimonials
+Get testimonials error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:25:37.689Z - GET /api/testimonials/featured
+Get featured testimonials error: {
+  code: '42501',
+  details: null,
+  hint: null,
+  message: 'permission denied for schema public'
+}
+2025-08-03T09:25:37.727Z - POST /api/auth/register
+Supabase auth.signUp error: AuthApiError: Email address "test@example.com" is invalid
+    at handleError (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:69:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async _handleRequest (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:114:9)
+    at async _request (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:95:18)
+    at async SupabaseAuthClient.signUp (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/GoTrueClient.js:321:23)
+    at async /home/ubuntu/project/empire_lane_limo/backend/src/routes/auth.js:33:29 {
+  __isAuthError: true,
+  status: 400,
+  code: 'email_address_invalid'
+}
+2025-08-03T09:25:37.870Z - POST /api/auth/login
+Supabase auth.signInWithPassword error: AuthApiError: Invalid login credentials
+    at handleError (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:69:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async _handleRequest (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:114:9)
+    at async _request (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/lib/fetch.js:95:18)
+    at async SupabaseAuthClient.signInWithPassword (/home/ubuntu/project/empire_lane_limo/backend/node_modules/@supabase/auth-js/dist/main/GoTrueClient.js:384:23)
+    at async /home/ubuntu/project/empire_lane_limo/backend/src/routes/auth.js:93:29 {
+  __isAuthError: true,
+  status: 400,
+  code: 'invalid_credentials'
+}
