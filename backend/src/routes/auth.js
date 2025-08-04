@@ -52,6 +52,11 @@ router.post('/register', async (req, res) => {
     }
 
     const user = data.user;
+
+    if (!user) {
+      return res.status(500).json({ error: "User not returned after registration" });
+    }
+
     const session = data.session;
 
     if (!user || !session) {

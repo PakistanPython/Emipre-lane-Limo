@@ -14,6 +14,7 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null); // State for error messages
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,17 +39,8 @@ const Register = () => {
         notifications: formData.notifications,
       });
 
-      if (response.data && response.data.token) {
-        localStorage.setItem('authToken', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-
-        const redirectPath = localStorage.getItem('redirectAfterLogin');
-        if (redirectPath) {
-          localStorage.removeItem('redirectAfterLogin');
-          navigate(redirectPath);
-        } else {
-          navigate('/customer-dashboard');
-        }
+      if (response.data && response.data.message) {
+        setRegistrationSuccess(true);
       } else {
         setError('Registration failed: Invalid response from server.');
       }
@@ -91,13 +83,24 @@ const Register = () => {
                 {/* Registration Card */}
                 <div className="bg-card border border-border rounded-xl luxury-shadow-lg p-6 lg:p-8">
                   {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-                  <RegistrationProgress currentStep={currentStep} />
-                  <RegistrationForm 
-                    onSubmit={handleRegistration}
-                    isLoading={isLoading}
-                    currentStep={currentStep}
-                    setCurrentStep={setCurrentStep}
-                  />
+                  {registrationSuccess ? (
+                    <div className="text-center">
+                      <h2 className="text-2xl font-bold text-green-500 mb-4">Registration Successful!</h2>
+                      <p className="text-lg text-muted-foreground">
+                        Please check your email to confirm your account.
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      <RegistrationProgress currentStep={currentStep} />
+                      <RegistrationForm 
+                        onSubmit={handleRegistration}
+                        isLoading={isLoading}
+                        currentStep={currentStep}
+                        setCurrentStep={setCurrentStep}
+                      />
+                    </>
+                  )}
                 </div>
 
                 {/* Login Link */}
