@@ -6,10 +6,11 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Create users table
+DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255),
     full_name VARCHAR(200),
     phone VARCHAR(20) UNIQUE,
     role VARCHAR(30) NOT NULL DEFAULT 'customer', -- 'customer', 'admin', 'driver'
@@ -23,6 +24,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 
 -- Create vehicles table
+DROP TABLE IF EXISTS vehicles CASCADE;
 CREATE TABLE IF NOT EXISTS vehicles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(200) NOT NULL,
@@ -303,3 +305,10 @@ CREATE TRIGGER update_testimonials_updated_at BEFORE UPDATE ON testimonials
 DROP TRIGGER IF EXISTS update_pricing_rules_updated_at ON pricing_rules;
 CREATE TRIGGER update_pricing_rules_updated_at BEFORE UPDATE ON pricing_rules
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Add foreign key constraint for bookings to vehicles
+ALTER TABLE bookings
+ADD CONSTRAINT fk_bookings_vehicle_id
+FOREIGN KEY (vehicle_id)
+REFERENCES vehicles(id)
+ON DELETE RESTRICT;

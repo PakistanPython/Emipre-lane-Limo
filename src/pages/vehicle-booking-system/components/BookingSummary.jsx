@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../../contexts/UserContext';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import { Checkbox } from '../../../components/ui/Checkbox';
@@ -7,6 +8,7 @@ import Icon from '../../../components/AppIcon';
 import Image from '../../../components/AppImage';
 
 const BookingSummary = ({ formData, onFormChange, onBack }) => {
+  const { user } = useUser();
   const [passengerInfo, setPassengerInfo] = useState({
     firstName: '',
     lastName: '',
@@ -17,6 +19,18 @@ const BookingSummary = ({ formData, onFormChange, onBack }) => {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      setPassengerInfo({
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        specialInstructions: ''
+      });
+    }
+  }, [user]);
 
   const calculateTotalPrice = () => {
     let total = formData.selectedVehicle?.basePrice || 0;

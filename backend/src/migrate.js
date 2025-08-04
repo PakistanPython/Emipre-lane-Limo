@@ -5,7 +5,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 // Database connection
 const client = new Client({
-  connectionString: process.env.POSTGRES_URL_NON_POOLING,
+  connectionString: `${process.env.POSTGRES_URL_NON_POOLING}?sslmode=require`,
   ssl: {
     rejectUnauthorized: false
   }
@@ -17,6 +17,7 @@ const migrationsDir = path.join(__dirname, '../migrations');
 // Create migration tracking table
 async function createMigrationTable() {
   try {
+    await client.query('DROP TABLE IF EXISTS schema_migrations');
     await client.query(`
       CREATE TABLE IF NOT EXISTS schema_migrations (
         id SERIAL PRIMARY KEY,
