@@ -16,11 +16,11 @@ const AccountOverview = () => {
   }
 
   const userProfile = {
-    name: `${user.firstName} ${user.lastName}`,
+    name: user.name || `${user.firstName} ${user.lastName}`,
     email: user.email,
     phone: user.phone,
-    memberSince: new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
-    avatar: user.profileImage || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+    memberSince: user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'N/A',
+    avatar: user.picture || user.profileImage || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
     membershipTier: user.membershipTier || "Bronze",
   };
 
