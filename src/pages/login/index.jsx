@@ -58,11 +58,11 @@ const LoginPage = () => {
 
   const handleSocialLogin = (userData) => {
     // This part would typically involve backend integration for social login
-    // For now, we'll simulate success and redirect
+    // For now, we'll use the data from the social provider
     console.log('Social login data:', userData);
-    // Assuming social login provides a token and user data
-    localStorage.setItem('authToken', 'mock_social_token'); // Replace with actual token
-    localStorage.setItem('user', JSON.stringify({ email: userData.email, firstName: userData.name })); // Replace with actual user data
+    
+    // Use the login function from UserContext to set the user state
+    login({ email: userData.email, name: userData.name }, userData.credential);
 
     const redirectPath = localStorage.getItem('redirectAfterLogin');
     if (redirectPath) {
