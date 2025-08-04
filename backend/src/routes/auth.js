@@ -240,4 +240,89 @@ router.put('/profile', authenticateToken, async (req, res) => {
   }
 });
 
+// Google Login
+router.post('/google-login', async (req, res) => {
+  try {
+    const { email, name, picture } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required for Google login' });
+    }
+
+    // Check if user already exists
+    const { data: existingUser, error: findError } = await supabaseAdmin
+      .from('users')
+      .select('*')
+      .eq('email', email.toLowerCase())
+      .single();
+
+    if (findError && findError.code !== 'PGRST116') { // Ignore 'not found' error
+      console.error('Error finding user:', findError);
+      return res.status(500).json({ error: 'Error finding user' });
+    }
+
+    if (existingUser) {
+      // User exists, generate a token and send response
+      const token = generateToken(existingUser);
+      return res.json({
+        message: 'Login successful',
+        user: existingUser,
+        token: token,
+      });
+    }
+
+    // User does not exist, create a new user
+    const nameParts = name ? name.trim().split(' ') : ['User', ''];
+    const firstName = nameParts[0];
+    const lastName = nameParts.slice(1).join(' ');
+
+    const { data: newUser, error: createError } = await supabaseAdmin.auth.signUp({
+      email: email.toLowerCase(),
+      password: uuidv4(), // Generate a random password for social logins
+      options: {
+        email_confirm: true, // Social logins are already verified
+        user_metadata: {
+          first_name: firstName,
+          last_name: lastName,
+          full_name: name,
+          profile_image_url: picture,
+        },
+      },
+    });
+
+    if (createError) {
+      console.error('Error creating user:', createError);
+      return res.status(500).json({ error: 'Error creating user' });
+    }
+    
+    const user = newUser.user;
+    const session = newUser.session;
+
+
+    const userResponse = {
+      id: user.id,
+      email: user.email,
+      firstName: user.user_metadata.first_name,
+      lastName: user.user_metadata.last_name,
+      phone: user.user_metadata.phone,
+      preferredVehicle: user.user_metadata.preferred_vehicle_type,
+      notifications: user.user_metadata.notifications_enabled,
+      membershipTier: user.user_metadata.membership_tier,
+      loyaltyPoints: user.user_metadata.loyalty_points,
+      profileImage: user.user_metadata.profile_image_url,
+      createdAt: user.created_at
+    };
+
+    res.status(201).json({
+      message: 'User registered and logged in successfully',
+      user: userResponse,
+      token: session.access_token,
+    });
+
+  } catch (error) {
+    console.error('Google login error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 module.exports = router;

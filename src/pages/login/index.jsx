@@ -56,20 +56,37 @@ const LoginPage = () => {
     }
   };
 
-  const handleSocialLogin = (userData) => {
-    // This part would typically involve backend integration for social login
-    // For now, we'll use the data from the social provider
-    console.log('Social login data:', userData);
-    
-    // Use the login function from UserContext to set the user state
-    login(userData, userData.credential);
+  const handleSocialLogin = async (userData) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await api.post('/auth/google-login', {
+        email: userData.email,
+        name: userData.name,
+        picture: userData.picture,
+      });
 
-    const redirectPath = localStorage.getItem('redirectAfterLogin');
-    if (redirectPath) {
-      localStorage.removeItem('redirectAfterLogin');
-      navigate(redirectPath);
-    } else {
-      navigate('/customer-dashboard');
+      if (response.data && response.data.token) {
+        login(response.data.user, response.data.token);
+        const redirectPath = localStorage.getItem('redirectAfterLogin');
+        if (redirectPath) {
+          localStorage.removeItem('redirectAfterLogin');
+          navigate(redirectPath);
+        } else {
+          navigate('/customer-dashboard');
+        }
+      } else {
+        setError('Login failed: Invalid response from server.');
+      }
+    } catch (err) {
+      console.error('Google login error:', err);
+      if (err.response && err.response.data && err.response.data.error) {
+        setError(err.response.data.error);
+      } else {
+        setError('An unexpected error occurred during Google login.');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
