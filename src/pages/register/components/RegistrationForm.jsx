@@ -339,6 +339,7 @@ const RegistrationForm = ({ onSubmit, isLoading, currentStep, setCurrentStep }) 
             onClick={handleNext}
             iconName="ArrowRight"
             iconPosition="right"
+            disabled={isLoading}
           >
             Next Step
           </Button>

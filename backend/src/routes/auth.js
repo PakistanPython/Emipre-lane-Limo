@@ -38,11 +38,10 @@ router.post('/register', async (req, res) => {
       email: email.toLowerCase(),
       password: password,
       options: {
+        email_confirm: false,
         user_metadata: {
           full_name: full_name,
           phone: phone || null,
-          preferred_vehicle_type: preferredVehicle || null,
-          notifications_enabled: notifications !== false,
         }
       }
     });
