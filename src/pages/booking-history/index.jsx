@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../contexts/UserContext';
+import api from '../../services/api';
 import AuthenticationAwareHeader from '../../components/ui/AuthenticationAwareHeader';
 import UserDashboardSidebar from '../../components/ui/UserDashboardSidebar';
 import GlobalCTAButton from '../../components/ui/GlobalCTAButton';
@@ -10,7 +12,7 @@ import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 
 const BookingHistory = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { user, loading: userLoading } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState([]);
@@ -19,125 +21,28 @@ const BookingHistory = () => {
   const [dateRange, setDateRange] = useState('all');
   const navigate = useNavigate();
 
-  // Mock data for booking history
-  const mockHistoryBookings = [
-    {
-      id: "BK-2024-156",
-      date: "2024-12-15",
-      time: "03:30 PM",
-      pickup: "JFK Airport Terminal 1",
-      dropoff: "Manhattan Financial District",
-      vehicle: "Mercedes S-Class",
-      driver: {
-        name: "Robert Davis",
-        rating: 4.9,
-        avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face"
-      },
-      status: "completed",
-      duration: "42 mins",
-      price: "$145.00",
-      bookingType: "Airport Transfer",
-      rating: 5,
-      receiptId: "RCP-2024-156",
-      tripPhotos: ["https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=300&h=200&fit=crop"]
-    },
-    {
-      id: "BK-2024-142",
-      date: "2024-12-08",
-      time: "09:15 AM",
-      pickup: "The Plaza Hotel",
-      dropoff: "Central Park Zoo",
-      vehicle: "BMW 7 Series",
-      driver: {
-        name: "Lisa Zhang",
-        rating: 4.8,
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face"
-      },
-      status: "completed",
-      duration: "18 mins",
-      price: "$65.00",
-      bookingType: "Point to Point",
-      rating: 4,
-      receiptId: "RCP-2024-142",
-      tripPhotos: null
-    },
-    {
-      id: "BK-2024-138",
-      date: "2024-12-05",
-      time: "07:45 PM",
-      pickup: "Corporate Office - 5th Ave",
-      dropoff: "LaGuardia Airport",
-      vehicle: "Cadillac Escalade",
-      driver: {
-        name: "Thomas Wilson",
-        rating: 4.7,
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
-      },
-      status: "completed",
-      duration: "38 mins",
-      price: "$110.00",
-      bookingType: "Corporate",
-      rating: 5,
-      receiptId: "RCP-2024-138",
-      tripPhotos: null
-    },
-    {
-      id: "BK-2024-125",
-      date: "2024-11-28",
-      time: "02:00 PM",
-      pickup: "Statue of Liberty",
-      dropoff: "Times Square",
-      vehicle: "Tesla Model S",
-      driver: {
-        name: "Maria Rodriguez",
-        rating: 4.9,
-        avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=face"
-      },
-      status: "completed",
-      duration: "35 mins",
-      price: "$95.00",
-      bookingType: "Sightseeing",
-      rating: 5,
-      receiptId: "RCP-2024-125",
-      tripPhotos: ["https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=300&h=200&fit=crop"]
-    },
-    {
-      id: "BK-2024-112",
-      date: "2024-11-20",
-      time: "06:30 AM",
-      pickup: "Home - Brooklyn Heights",
-      dropoff: "Newark Airport",
-      vehicle: "Mercedes E-Class",
-      driver: {
-        name: "David Kim",
-        rating: 4.6,
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
-      },
-      status: "completed",
-      duration: "55 mins",
-      price: "$165.00",
-      bookingType: "Airport Transfer",
-      rating: 4,
-      receiptId: "RCP-2024-112",
-      tripPhotos: null
+  useEffect(() => {
+    if (!userLoading && !user) {
+      navigate('/login');
     }
-  ];
+  }, [user, userLoading, navigate]);
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-    setIsAuthenticated(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setBookings(mockHistoryBookings);
-      setFilteredBookings(mockHistoryBookings);
-      setLoading(false);
-    }, 1000);
-  }, [navigate]);
+    const fetchBookings = async () => {
+      if (!user) return;
+      try {
+        const { data } = await api.get('/bookings/my-bookings?status=completed');
+        setBookings(data.bookings);
+        setFilteredBookings(data.bookings);
+      } catch (error) {
+        console.error("Failed to fetch booking history", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookings();
+  }, [user]);
 
   useEffect(() => {
     filterBookings(activeFilter, dateRange);
@@ -195,7 +100,7 @@ const BookingHistory = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  if (loading) {
+  if (userLoading || loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -206,7 +111,7 @@ const BookingHistory = () => {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!user) {
     return null;
   }
 

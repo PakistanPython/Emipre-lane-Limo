@@ -74,7 +74,7 @@ const HistoryCard = ({
                 {booking.bookingType}
               </span>
               <span className="text-sm text-muted-foreground font-inter">
-                #{booking.id}
+                #{booking.bookingNumber}
               </span>
             </div>
 
@@ -84,13 +84,13 @@ const HistoryCard = ({
                 <div className="flex items-center gap-2 mb-2">
                   <Icon name="Calendar" size={16} className="text-muted-foreground" />
                   <span className="text-sm font-inter font-medium text-foreground">
-                    {formatDate(booking.date)}
+                    {formatDate(booking.pickupDate)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icon name="Clock" size={16} className="text-muted-foreground" />
                   <span className="text-sm text-muted-foreground font-inter">
-                    {booking.time} • {booking.duration}
+                    {booking.pickupTime} • {booking.actualDuration} mins
                   </span>
                 </div>
               </div>
@@ -99,13 +99,13 @@ const HistoryCard = ({
                 <div className="flex items-center gap-2 mb-2">
                   <Icon name="Car" size={16} className="text-muted-foreground" />
                   <span className="text-sm font-inter font-medium text-foreground">
-                    {booking.vehicle}
+                    {booking.vehicle.name}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icon name="DollarSign" size={16} className="text-muted-foreground" />
                   <span className="text-sm text-muted-foreground font-inter">
-                    {booking.price}
+                    ${booking.totalAmount}
                   </span>
                 </div>
               </div>
@@ -124,7 +124,7 @@ const HistoryCard = ({
                     Pickup
                   </p>
                   <p className="text-sm font-inter font-medium text-foreground">
-                    {booking.pickup}
+                    {booking.pickupLocation}
                   </p>
                 </div>
                 <div>
@@ -132,30 +132,32 @@ const HistoryCard = ({
                     Dropoff
                   </p>
                   <p className="text-sm font-inter font-medium text-foreground">
-                    {booking.dropoff}
+                    {booking.dropoffLocation}
                   </p>
                 </div>
               </div>
             </div>
 
             {/* Driver Info and Rating */}
-            <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg mb-4">
-              <img
-                src={booking.driver.avatar}
-                alt={booking.driver.name}
-                className="w-12 h-12 rounded-full object-cover"
-              />
-              <div className="flex-1">
-                <p className="text-sm font-inter font-semibold text-foreground mb-1">
-                  {booking.driver.name}
-                </p>
-                <RatingStars rating={booking.driver.rating} />
+            {booking.driver && (
+              <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg mb-4">
+                <img
+                  src={booking.driver.avatar}
+                  alt={booking.driver.name}
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+                <div className="flex-1">
+                  <p className="text-sm font-inter font-semibold text-foreground mb-1">
+                    {booking.driver.name}
+                  </p>
+                  <RatingStars rating={booking.driver.rating} />
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-muted-foreground mb-1">Your Rating:</p>
+                  <RatingStars rating={userRating} interactive={true} />
+                </div>
               </div>
-              <div className="text-right">
-                <p className="text-xs text-muted-foreground mb-1">Your Rating:</p>
-                <RatingStars rating={userRating} interactive={true} />
-              </div>
-            </div>
+            )}
 
             {/* Trip Photos */}
             {booking.tripPhotos && (
@@ -187,15 +189,15 @@ const HistoryCard = ({
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Reference:</span>
-                        <span className="font-medium">{booking.id}</span>
+                        <span className="font-medium">{booking.bookingNumber}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Duration:</span>
-                        <span className="font-medium">{booking.duration}</span>
+                        <span className="font-medium">{booking.actualDuration} mins</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Receipt ID:</span>
-                        <span className="font-medium">{booking.receiptId}</span>
+                        <span className="font-medium">{booking.id}</span>
                       </div>
                     </div>
                   </div>
@@ -207,19 +209,19 @@ const HistoryCard = ({
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Base Fare:</span>
-                        <span className="font-medium">${(parseFloat(booking.price.replace('$', '')) * 0.8).toFixed(2)}</span>
+                        <span className="font-medium">${booking.finalPrice}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Service Fee:</span>
-                        <span className="font-medium">${(parseFloat(booking.price.replace('$', '')) * 0.1).toFixed(2)}</span>
+                        <span className="font-medium">${booking.gratuityAmount}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Tip:</span>
-                        <span className="font-medium">${(parseFloat(booking.price.replace('$', '')) * 0.1).toFixed(2)}</span>
+                        <span className="font-medium">$0.00</span>
                       </div>
                       <div className="flex justify-between font-semibold border-t border-border pt-2">
                         <span>Total:</span>
-                        <span>{booking.price}</span>
+                        <span>${booking.totalAmount}</span>
                       </div>
                     </div>
                   </div>
