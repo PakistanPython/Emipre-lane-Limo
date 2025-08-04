@@ -43,10 +43,8 @@ const TripDetailsForm = ({ formData, onFormChange, onNext }) => {
   ];
 
   const handleInputChange = (field, value) => {
-    onFormChange({
-      ...formData,
-      [field]: value
-    });
+    const newFormData = { ...formData, [field]: value };
+    onFormChange(newFormData);
   };
 
   const handleLocationSelect = (field, location) => {

@@ -23,4 +23,15 @@ api.interceptors.request.use(
   }
 );
 
+// Function to create a new booking
+export const createBooking = async (bookingData) => {
+  try {
+    const response = await api.post('/bookings', bookingData);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating booking:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
 export default api;

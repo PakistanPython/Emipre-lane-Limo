@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../../contexts/UserContext';
+import { createBooking } from '../../../services/api';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import { Checkbox } from '../../../components/ui/Checkbox';
@@ -70,28 +71,35 @@ const BookingSummary = ({ formData, onFormChange, onBack }) => {
     }
 
     setIsSubmitting(true);
-    
-    // Mock booking submission
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Store booking data in localStorage (mock)
-      const bookingData = {
-        ...formData,
-        passengerInfo,
-        pricing,
-        bookingId: `EL${Date.now()}`,
-        status: 'confirmed',
-        createdAt: new Date().toISOString()
+      const bookingPayload = {
+        vehicleId: formData.selectedVehicle.id,
+        bookingType: formData.bookingType,
+        serviceCity: formData.serviceCity,
+        pickupLocation: formData.pickupLocation,
+        dropoffLocation: formData.dropoffLocation,
+        pickupDate: formData.pickupDate,
+        pickupTime: formData.pickupTime,
+        estimatedPrice: pricing.total,
+        isAirportTransfer: formData.isAirportTransfer,
+        flightNumber: formData.flightNumber,
+        specialRequirements: passengerInfo.specialInstructions,
+        passengerCount: 1, // Assuming 1 passenger for now
+        meetAndGreet: formData.meetAndGreet,
+        flightMonitoring: formData.flightMonitoring,
       };
-      
-      localStorage.setItem('currentBooking', JSON.stringify(bookingData));
-      
+
+      const newBooking = await createBooking(bookingPayload);
+
+      // Store booking data in localStorage (optional, for confirmation page)
+      localStorage.setItem('currentBooking', JSON.stringify(newBooking));
+
       // Navigate to confirmation page
-      navigate('/booking-confirmation');
+      navigate(`/booking-confirmation?bookingId=${newBooking.id}`);
     } catch (error) {
       console.error('Booking submission error:', error);
+      // Handle error (e.g., show a notification to the user)
     } finally {
       setIsSubmitting(false);
     }

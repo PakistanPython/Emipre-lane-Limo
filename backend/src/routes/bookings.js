@@ -102,8 +102,7 @@ router.post('/', authenticateToken, async (req, res) => {
     const { data: booking, error: bookingError } = await supabaseAdmin
       .from('bookings')
       .insert(bookingData)
-      .select()
-      .single();
+      .select();
 
     if (bookingError) {
       console.error('Booking creation error:', bookingError);
@@ -125,26 +124,26 @@ router.post('/', authenticateToken, async (req, res) => {
     const bookingResponse = {
       id: booking.id,
       bookingNumber: booking.booking_number,
-      status: booking.status,
-      bookingType: booking.booking_type,
-      serviceCity: booking.service_city,
-      pickupLocation: booking.pickup_location,
-      dropoffLocation: booking.dropoff_location,
-      pickupDate: booking.pickup_date,
-      pickupTime: booking.pickup_time,
-      estimatedDuration: booking.estimated_duration_minutes,
-      estimatedDistance: booking.estimated_distance_miles,
-      isAirportTransfer: booking.is_airport_transfer,
-      flightNumber: booking.flight_number,
-      airline: booking.airline,
-      terminal: booking.terminal,
-      meetAndGreet: booking.meet_and_greet,
-      flightMonitoring: booking.flight_monitoring,
-      specialRequirements: booking.special_requirements,
-      passengerCount: booking.passenger_count,
-      estimatedPrice: parseFloat(booking.estimated_price),
-      paymentStatus: booking.payment_status,
-      createdAt: booking.created_at,
+      status: booking[0].status,
+      bookingType: booking[0].booking_type,
+      serviceCity: booking[0].service_city,
+      pickupLocation: booking[0].pickup_location,
+      dropoffLocation: booking[0].dropoff_location,
+      pickupDate: booking[0].pickup_date,
+      pickupTime: booking[0].pickup_time,
+      estimatedDuration: booking[0].estimated_duration_minutes,
+      estimatedDistance: booking[0].estimated_distance_miles,
+      isAirportTransfer: booking[0].is_airport_transfer,
+      flightNumber: booking[0].flight_number,
+      airline: booking[0].airline,
+      terminal: booking[0].terminal,
+      meetAndGreet: booking[0].meet_and_greet,
+      flightMonitoring: booking[0].flight_monitoring,
+      specialRequirements: booking[0].special_requirements,
+      passengerCount: booking[0].passenger_count,
+      estimatedPrice: parseFloat(booking[0].estimated_price),
+      paymentStatus: booking[0].payment_status,
+      createdAt: booking[0].created_at,
       vehicle: {
         id: vehicle.id,
         name: vehicle.name,
@@ -414,4 +413,3 @@ router.put('/:id/cancel', authenticateToken, async (req, res) => {
 });
 
 module.exports = router;
-
