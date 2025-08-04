@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../contexts/UserContext';
+import api from '../../services/api';
 import AuthenticationAwareHeader from '../../components/ui/AuthenticationAwareHeader';
 import UserDashboardSidebar from '../../components/ui/UserDashboardSidebar';
 import GlobalCTAButton from '../../components/ui/GlobalCTAButton';
@@ -10,7 +12,7 @@ import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 
 const CurrentBookings = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { user, loading: userLoading } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState([]);
@@ -18,96 +20,31 @@ const CurrentBookings = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const navigate = useNavigate();
 
-  // Mock data for current bookings
-  const mockBookings = [
-    {
-      id: "BK-2025-001",
-      date: "2025-01-28",
-      time: "09:30 AM",
-      pickup: "Manhattan Financial District",
-      dropoff: "JFK Airport Terminal 4",
-      vehicle: "Mercedes S-Class",
-      driver: {
-        name: "James Wilson",
-        rating: 4.9,
-        phone: "+1 (555) 123-4567",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
-      },
-      status: "confirmed",
-      estimatedDuration: "45 mins",
-      price: "$125.00",
-      bookingType: "Airport Transfer",
-      specialRequirements: "Child seat required"
-    },
-    {
-      id: "BK-2025-002",
-      date: "2025-01-30",
-      time: "07:00 PM",
-      pickup: "The Plaza Hotel",
-      dropoff: "Lincoln Center",
-      vehicle: "BMW 7 Series",
-      driver: {
-        name: "Michael Chen",
-        rating: 4.8,
-        phone: "+1 (555) 987-6543",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
-      },
-      status: "driver_assigned",
-      estimatedDuration: "25 mins",
-      price: "$85.00",
-      bookingType: "Point to Point",
-      specialRequirements: null
-    },
-    {
-      id: "BK-2025-003",
-      date: "2025-02-02",
-      time: "02:00 PM",
-      pickup: "Corporate Office - 5th Ave",
-      dropoff: "LaGuardia Airport",
-      vehicle: "Cadillac Escalade",
-      driver: null,
-      status: "pending",
-      estimatedDuration: "35 mins",
-      price: "$95.00",
-      bookingType: "Corporate",
-      specialRequirements: "Corporate account billing"
-    },
-    {
-      id: "BK-2025-004",
-      date: "2025-01-28",
-      time: "11:00 AM",
-      pickup: "Brooklyn Bridge",
-      dropoff: "Statue of Liberty",
-      vehicle: "Tesla Model S",
-      driver: {
-        name: "Sarah Johnson",
-        rating: 4.9,
-        phone: "+1 (555) 456-7890",
-        avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face"
-      },
-      status: "en_route",
-      estimatedDuration: "40 mins",
-      price: "$110.00",
-      bookingType: "Sightseeing",
-      specialRequirements: null
+  useEffect(() => {
+    if (!userLoading && !user) {
+      navigate('/login');
     }
-  ];
+  }, [user, userLoading, navigate]);
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-    setIsAuthenticated(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setBookings(mockBookings);
-      setFilteredBookings(mockBookings);
-      setLoading(false);
-    }, 1000);
-  }, [navigate]);
+    const fetchBookings = async () => {
+      if (!user) return;
+      try {
+        const { data } = await api.get('/bookings/my-bookings');
+        const currentBookings = data.bookings.filter(
+          (b) => b.status !== 'completed' && b.status !== 'cancelled'
+        );
+        setBookings(currentBookings);
+        setFilteredBookings(currentBookings);
+      } catch (error) {
+        console.error("Failed to fetch current bookings", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookings();
+  }, [user]);
 
   useEffect(() => {
     filterBookings(activeFilter);
@@ -141,7 +78,7 @@ const CurrentBookings = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  if (loading) {
+  if (userLoading || loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -152,7 +89,7 @@ const CurrentBookings = () => {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!user) {
     return null;
   }
 

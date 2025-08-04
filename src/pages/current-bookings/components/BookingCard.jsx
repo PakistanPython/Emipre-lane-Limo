@@ -76,7 +76,7 @@ const BookingCard = ({
                 {booking.bookingType}
               </span>
               <span className="text-sm text-muted-foreground font-inter">
-                #{booking.id}
+                #{booking.bookingNumber}
               </span>
             </div>
 
@@ -86,7 +86,7 @@ const BookingCard = ({
                 <div className="flex items-center gap-2 mb-2">
                   <Icon name="Calendar" size={16} className="text-muted-foreground" />
                   <span className="text-sm font-inter font-medium text-foreground">
-                    {new Date(booking.date).toLocaleDateString('en-US', {
+                    {new Date(booking.pickupDate).toLocaleDateString('en-US', {
                       weekday: 'long',
                       year: 'numeric',
                       month: 'long',
@@ -97,7 +97,7 @@ const BookingCard = ({
                 <div className="flex items-center gap-2">
                   <Icon name="Clock" size={16} className="text-muted-foreground" />
                   <span className="text-sm text-muted-foreground font-inter">
-                    {booking.time} • {booking.estimatedDuration}
+                    {booking.pickupTime} • {booking.estimatedDuration} mins
                   </span>
                 </div>
               </div>
@@ -106,13 +106,13 @@ const BookingCard = ({
                 <div className="flex items-center gap-2 mb-2">
                   <Icon name="Car" size={16} className="text-muted-foreground" />
                   <span className="text-sm font-inter font-medium text-foreground">
-                    {booking.vehicle}
+                    {booking.vehicle.name}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Icon name="DollarSign" size={16} className="text-muted-foreground" />
                   <span className="text-sm text-muted-foreground font-inter">
-                    {booking.price}
+                    ${booking.estimatedPrice}
                   </span>
                 </div>
               </div>
@@ -131,7 +131,7 @@ const BookingCard = ({
                     Pickup
                   </p>
                   <p className="text-sm font-inter font-medium text-foreground">
-                    {booking.pickup}
+                    {booking.pickupLocation}
                   </p>
                 </div>
                 <div>
@@ -139,7 +139,7 @@ const BookingCard = ({
                     Dropoff
                   </p>
                   <p className="text-sm font-inter font-medium text-foreground">
-                    {booking.dropoff}
+                    {booking.dropoffLocation}
                   </p>
                 </div>
               </div>
