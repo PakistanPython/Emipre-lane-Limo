@@ -62,7 +62,7 @@ const LoginPage = () => {
     console.log('Social login data:', userData);
     
     // Use the login function from UserContext to set the user state
-    login({ email: userData.email, name: userData.name }, userData.credential);
+    login(userData, userData.credential);
 
     const redirectPath = localStorage.getItem('redirectAfterLogin');
     if (redirectPath) {

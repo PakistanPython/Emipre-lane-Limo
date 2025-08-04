@@ -7,13 +7,10 @@ import Button from '../../../components/ui/Button';
 const SocialLogin = ({ onSocialLogin }) => {
   const handleGoogleSuccess = (credentialResponse) => {
     const googleUser = jwtDecode(credentialResponse.credential);
-    
-    localStorage.setItem('authToken', credentialResponse.credential);
-    localStorage.setItem('userEmail', googleUser.email);
-    localStorage.setItem('userName', googleUser.name);
+    console.log("Decoded Google User:", googleUser); // Log the decoded user object
     
     if (onSocialLogin) {
-      onSocialLogin({ ...googleUser, provider: 'google' });
+      onSocialLogin({ ...googleUser, credential: credentialResponse.credential });
     }
   };
 
