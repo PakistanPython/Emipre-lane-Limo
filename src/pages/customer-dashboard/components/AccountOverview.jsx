@@ -2,17 +2,26 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
+import { useUser } from '../../../contexts/UserContext';
 
 const AccountOverview = () => {
+  const { user, loading } = useUser();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <div>User not found</div>;
+  }
+
   const userProfile = {
-    name: "Alexander Thompson",
-    email: "alexander.thompson@email.com",
-    phone: "+1 (555) 123-4567",
-    memberSince: "March 2023",
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
-    membershipTier: "Gold",
-    nextTier: "Platinum",
-    pointsToNextTier: 1550
+    name: `${user.firstName} ${user.lastName}`,
+    email: user.email,
+    phone: user.phone,
+    memberSince: new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+    avatar: user.profileImage || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+    membershipTier: user.membershipTier || "Bronze",
   };
 
   const paymentMethods = [
@@ -35,10 +44,10 @@ const AccountOverview = () => {
   ];
 
   const preferences = {
-    vehiclePreference: "Mercedes S-Class",
-    communicationPreference: "SMS + Email",
-    defaultTip: "20%",
-    autoBookingConfirmation: true
+    vehiclePreference: user.preferredVehicle || "Not set",
+    communicationPreference: user.notifications ? "SMS + Email" : "Email only",
+    defaultTip: user.defaultTip || "Not set",
+    autoBookingConfirmation: user.autoBookingConfirmation !== false
   };
 
   const getCardIcon = (brand) => {

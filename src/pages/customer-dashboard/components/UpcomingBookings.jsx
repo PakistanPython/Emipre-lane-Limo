@@ -1,60 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
+import api from '../../../services/api';
 
 const UpcomingBookings = () => {
-  const upcomingBookings = [
-    {
-      id: "BK-2025-001",
-      date: "2025-01-28",
-      time: "09:30 AM",
-      pickup: "Manhattan Financial District",
-      dropoff: "JFK Airport Terminal 4",
-      vehicle: "Mercedes S-Class",
-      driver: {
-        name: "James Wilson",
-        rating: 4.9,
-        phone: "+1 (555) 123-4567",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
-      },
-      status: "confirmed",
-      estimatedDuration: "45 mins",
-      price: "$125.00",
-      bookingType: "Airport Transfer"
-    },
-    {
-      id: "BK-2025-002",
-      date: "2025-01-30",
-      time: "07:00 PM",
-      pickup: "The Plaza Hotel",
-      dropoff: "Lincoln Center",
-      vehicle: "BMW 7 Series",
-      driver: {
-        name: "Michael Chen",
-        rating: 4.8,
-        phone: "+1 (555) 987-6543",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
-      },
-      status: "driver_assigned",
-      estimatedDuration: "25 mins",
-      price: "$85.00",
-      bookingType: "Point to Point"
-    },
-    {
-      id: "BK-2025-003",
-      date: "2025-02-02",
-      time: "02:00 PM",
-      pickup: "Corporate Office - 5th Ave",
-      dropoff: "LaGuardia Airport",
-      vehicle: "Cadillac Escalade",
-      driver: null,
-      status: "pending",
-      estimatedDuration: "35 mins",
-      price: "$95.00",
-      bookingType: "Corporate"
-    }
-  ];
+  const [upcomingBookings, setUpcomingBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUpcomingBookings = async () => {
+      try {
+        const { data } = await api.get('/bookings/my-bookings');
+        const upcoming = data.bookings.filter(
+          (b) => b.status === 'pending' || b.status === 'confirmed' || b.status === 'driver_assigned'
+        );
+        setUpcomingBookings(upcoming);
+      } catch (error) {
+        console.error("Failed to fetch upcoming bookings", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUpcomingBookings();
+  }, []);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -85,6 +55,17 @@ const UpcomingBookings = () => {
         return 'Unknown';
     }
   };
+
+  if (loading) {
+    return (
+      <div className="bg-card border border-border rounded-lg p-8 text-center">
+        <div className="animate-pulse">
+          <div className="h-8 bg-muted rounded w-1/2 mx-auto mb-4"></div>
+          <div className="h-4 bg-muted rounded w-3/4 mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
 
   if (upcomingBookings.length === 0) {
     return (
@@ -140,7 +121,7 @@ const UpcomingBookings = () => {
                     <div className="flex items-center gap-2 mb-2">
                       <Icon name="Calendar" size={16} className="text-muted-foreground" />
                       <span className="text-sm font-inter font-medium text-foreground">
-                        {new Date(booking.date).toLocaleDateString('en-US', {
+                        {new Date(booking.pickupDate).toLocaleDateString('en-US', {
                           weekday: 'long',
                           year: 'numeric',
                           month: 'long',
@@ -151,7 +132,7 @@ const UpcomingBookings = () => {
                     <div className="flex items-center gap-2">
                       <Icon name="Clock" size={16} className="text-muted-foreground" />
                       <span className="text-sm text-muted-foreground font-inter">
-                        {booking.time} • {booking.estimatedDuration}
+                        {booking.pickupTime} • {booking.estimatedDuration} mins
                       </span>
                     </div>
                   </div>
@@ -160,13 +141,13 @@ const UpcomingBookings = () => {
                     <div className="flex items-center gap-2 mb-2">
                       <Icon name="Car" size={16} className="text-muted-foreground" />
                       <span className="text-sm font-inter font-medium text-foreground">
-                        {booking.vehicle}
+                        {booking.vehicle.name}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Icon name="DollarSign" size={16} className="text-muted-foreground" />
                       <span className="text-sm text-muted-foreground font-inter">
-                        {booking.price}
+                        ${booking.estimatedPrice}
                       </span>
                     </div>
                   </div>
@@ -182,12 +163,12 @@ const UpcomingBookings = () => {
                   <div className="flex-1 space-y-2">
                     <div>
                       <p className="text-sm font-inter font-medium text-foreground">
-                        {booking.pickup}
+                        {booking.pickupLocation}
                       </p>
                     </div>
                     <div>
                       <p className="text-sm font-inter font-medium text-foreground">
-                        {booking.dropoff}
+                        {booking.dropoffLocation}
                       </p>
                     </div>
                   </div>

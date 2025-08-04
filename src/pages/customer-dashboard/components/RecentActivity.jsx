@@ -1,67 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
+import api from '../../../services/api';
 
 const RecentActivity = () => {
-  const recentTrips = [
-    {
-      id: "BK-2025-098",
-      date: "2025-01-25",
-      time: "03:45 PM",
-      pickup: "JFK Airport Terminal 1",
-      dropoff: "Manhattan Midtown",
-      vehicle: "Mercedes S-Class",
-      driver: "Robert Johnson",
-      status: "completed",
-      rating: 5,
-      price: "$135.00",
-      duration: "52 mins",
-      distance: "18.5 miles"
-    },
-    {
-      id: "BK-2025-097",
-      date: "2025-01-23",
-      time: "08:30 AM",
-      pickup: "Home - Upper East Side",
-      dropoff: "Corporate Office",
-      vehicle: "BMW 7 Series",
-      driver: "Sarah Williams",
-      status: "completed",
-      rating: 4,
-      price: "$65.00",
-      duration: "28 mins",
-      distance: "8.2 miles"
-    },
-    {
-      id: "BK-2025-096",
-      date: "2025-01-20",
-      time: "07:15 PM",
-      pickup: "Restaurant - SoHo",
-      dropoff: "Home - Upper East Side",
-      vehicle: "Cadillac Escalade",
-      driver: "David Martinez",
-      status: "completed",
-      rating: 5,
-      price: "$85.00",
-      duration: "35 mins",
-      distance: "12.1 miles"
-    },
-    {
-      id: "BK-2025-095",
-      date: "2025-01-18",
-      time: "11:00 AM",
-      pickup: "Hotel - Times Square",
-      dropoff: "LaGuardia Airport",
-      vehicle: "Mercedes E-Class",
-      driver: "Jennifer Lee",
-      status: "completed",
-      rating: 5,
-      price: "$95.00",
-      duration: "42 mins",
-      distance: "15.3 miles"
-    }
-  ];
+  const [recentTrips, setRecentTrips] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRecentActivity = async () => {
+      try {
+        const { data } = await api.get('/bookings/my-bookings?status=completed&limit=4');
+        setRecentTrips(data.bookings);
+      } catch (error) {
+        console.error("Failed to fetch recent activity", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecentActivity();
+  }, []);
 
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, index) => (
@@ -103,7 +63,7 @@ const RecentActivity = () => {
                     Completed
                   </span>
                   <span className="text-sm text-muted-foreground font-inter">
-                    {trip.id}
+                    {trip.bookingNumber}
                   </span>
                 </div>
 
@@ -112,20 +72,20 @@ const RecentActivity = () => {
                     <div className="flex items-center gap-2 mb-2">
                       <Icon name="Calendar" size={16} className="text-muted-foreground" />
                       <span className="text-sm font-inter font-medium text-foreground">
-                        {new Date(trip.date).toLocaleDateString('en-US', {
+                        {new Date(trip.pickupDate).toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric',
                           year: 'numeric'
                         })}
                       </span>
                       <span className="text-sm text-muted-foreground font-inter">
-                        at {trip.time}
+                        at {trip.pickupTime}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Icon name="Clock" size={16} className="text-muted-foreground" />
                       <span className="text-sm text-muted-foreground font-inter">
-                        {trip.duration} • {trip.distance}
+                        {trip.actualDuration} mins • {trip.actualDistance} miles
                       </span>
                     </div>
                   </div>
@@ -134,13 +94,13 @@ const RecentActivity = () => {
                     <div className="flex items-center gap-2 mb-2">
                       <Icon name="Car" size={16} className="text-muted-foreground" />
                       <span className="text-sm font-inter font-medium text-foreground">
-                        {trip.vehicle}
+                        {trip.vehicle.name}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Icon name="User" size={16} className="text-muted-foreground" />
                       <span className="text-sm text-muted-foreground font-inter">
-                        {trip.driver}
+                        {trip.driver?.name || 'N/A'}
                       </span>
                     </div>
                   </div>
@@ -156,12 +116,12 @@ const RecentActivity = () => {
                   <div className="flex-1 space-y-2">
                     <div>
                       <p className="text-sm font-inter font-medium text-foreground">
-                        {trip.pickup}
+                        {trip.pickupLocation}
                       </p>
                     </div>
                     <div>
                       <p className="text-sm font-inter font-medium text-foreground">
-                        {trip.dropoff}
+                        {trip.dropoffLocation}
                       </p>
                     </div>
                   </div>
@@ -172,11 +132,11 @@ const RecentActivity = () => {
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-muted-foreground font-inter">Rating:</span>
                     <div className="flex items-center gap-1">
-                      {renderStars(trip.rating)}
+                      {renderStars(trip.customerRating)}
                     </div>
                   </div>
                   <div className="text-lg font-inter font-semibold text-foreground">
-                    {trip.price}
+                    ${trip.totalAmount}
                   </div>
                 </div>
               </div>

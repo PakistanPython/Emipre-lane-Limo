@@ -2,8 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
+import { useUser } from '../../../contexts/UserContext';
 
 const QuickActions = () => {
+  const { user, loading } = useUser();
   const quickActions = [
     {
       id: 1,
@@ -192,13 +194,13 @@ const QuickActions = () => {
                 Empire Elite Status
               </h3>
               <p className="text-sm text-muted-foreground font-inter">
-                Gold Member
+                {user?.membershipTier || 'Bronze'} Member
               </p>
             </div>
           </div>
           <div className="text-right">
             <p className="text-2xl font-inter font-bold text-accent">
-              2,450
+              {user?.loyaltyPoints || 0}
             </p>
             <p className="text-xs text-muted-foreground font-inter">
               Points
@@ -208,17 +210,17 @@ const QuickActions = () => {
 
         <div className="space-y-3">
           <div className="flex justify-between text-sm font-inter">
-            <span className="text-muted-foreground">Progress to Platinum</span>
-            <span className="text-foreground font-medium">2,450 / 5,000</span>
+            <span className="text-muted-foreground">Progress to Next Tier</span>
+            <span className="text-foreground font-medium">{user?.loyaltyPoints || 0} / 5000</span>
           </div>
           <div className="w-full bg-muted rounded-full h-2">
-            <div 
+            <div
               className="bg-accent h-2 rounded-full luxury-transition"
-              style={{ width: '49%' }}
+              style={{ width: `${((user?.loyaltyPoints || 0) / 5000) * 100}%` }}
             />
           </div>
           <p className="text-xs text-muted-foreground font-inter">
-            1,550 points needed for Platinum status
+            {5000 - (user?.loyaltyPoints || 0)} points needed for next tier
           </p>
         </div>
 

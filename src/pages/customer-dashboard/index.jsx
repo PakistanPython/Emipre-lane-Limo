@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../contexts/UserContext';
 import AuthenticationAwareHeader from '../../components/ui/AuthenticationAwareHeader';
 import UserDashboardSidebar from '../../components/ui/UserDashboardSidebar';
 import GlobalCTAButton from '../../components/ui/GlobalCTAButton';
@@ -11,21 +12,16 @@ import AccountOverview from './components/AccountOverview';
 import Icon from '../../components/AppIcon';
 
 const CustomerDashboard = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { user, loading: userLoading } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
+    if (!userLoading && !user) {
       navigate('/login');
-      return;
     }
-    setIsAuthenticated(true);
-    setLoading(false);
-  }, [navigate]);
+  }, [user, userLoading, navigate]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -38,7 +34,7 @@ const CustomerDashboard = () => {
     { id: 'account', label: 'Account', icon: 'User' }
   ];
 
-  if (loading) {
+  if (userLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -49,7 +45,7 @@ const CustomerDashboard = () => {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!user) {
     return null;
   }
 
@@ -109,7 +105,7 @@ const CustomerDashboard = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h1 className="text-3xl font-inter font-bold text-foreground mb-2">
-                  Welcome back, Alexander
+                  Welcome back, {user.firstName}
                 </h1>
                 <p className="text-muted-foreground font-inter">
                   Manage your bookings and account preferences
